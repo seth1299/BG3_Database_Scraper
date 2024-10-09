@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baldur's Gate 3 Weapons Filter</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Baldur's Gate 3 Weapon Search</h1>
+
+    <div class="filter-section">
+        <form id="filterForm">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="enchantment">Enchantment</label>
+                    <select class="form-select" id="enchantment" name="enchantment">
+                        <option value="">Any</option>
+                        <option value="+1">+1</option>
+                        <option value="+2">+2</option>
+                        <option value="+3">+3</option>
+                        <!-- Add other enchantment levels if needed -->
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="damage_type">Damage Type</label>
+                    <select class="form-select" id="damage_type" name="damage_type">
+                        <option value="">Any</option>
+                        <option value="Bludgeoning">Bludgeoning</option>
+                        <option value="Piercing">Piercing</option>
+                        <option value="Slashing">Slashing</option>
+                        <option value="Cold">Cold</option>
+                        <!-- Add other damage types if needed -->
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="min_weight">Min Weight</label>
+                    <input type="number" class="form-control" id="min_weight" name="min_weight" placeholder="Min Weight">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="max_weight">Max Weight</label>
+                    <input type="number" class="form-control" id="max_weight" name="max_weight" placeholder="Max Weight">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="min_price">Min Price</label>
+                    <input type="number" class="form-control" id="min_price" name="min_price" placeholder="Min Price">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="max_price">Max Price</label>
+                    <input type="number" class="form-control" id="max_price" name="max_price" placeholder="Max Price">
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary mt-3" id="filterBtn">Apply Filters</button>
+        </form>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Weapon</th>
+                <th>Enchantment</th>
+                <th>Damage</th>
+                <th>Damage Type</th>
+                <th>Weight</th>
+                <th>Price</th>
+                <th>Special</th>
+            </tr>
+        </thead>
+        <tbody id="weaponTableBody">
+            <!-- Weapon data will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#filterBtn').click(function() {
+                var formData = {
+                    enchantment: $('#enchantment').val(),
+                    damage_type: $('#damage_type').val(),
+                    min_weight: $('#min_weight').val(),
+                    max_weight: $('#max_weight').val(),
+                    min_price: $('#min_price').val(),
+                    max_price: $('#max_price').val()
+                };
+
+                $.ajax({
+                    url: '/filter',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        $('#weaponTableBody').empty();
+                        response.forEach(function(weapon) {
+                            $('#weaponTableBody').append(
+                                '<tr>' +
+                                '<td>' + weapon.name + '</td>' +
+                                '<td>' + weapon.enchantment + '</td>' +
+                                '<td>' + weapon.damage + '</td>' +
+                                '<td>' + weapon.damage_type + '</td>' +
+                                '<td>' + weapon.weight + '</td>' +
+                                '<td>' + weapon.price + '</td>' +
+                                '<td>' + weapon.special + '</td>' +
+                                '</tr>'
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
